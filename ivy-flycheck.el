@@ -3,15 +3,14 @@
 ;; Copyright (C) 2020 Vlad Piersec
 
 ;; Author: Vlad Piersec <vlad.piersec@protonmail.com>
-;; URL:
-;; Version: 0.1-pre
+;; URL: https://github.com/caisah/ivy-flycheck
+;; Version: 0.1.0
 ;; Package-Requires: ((emacs "24.5"))
 ;; Keywords: flycheck, ivy, errors
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-
 
 ;;;; Installation
 
@@ -29,23 +28,26 @@
 ;; Then put this file in your load-path, and put this in your init
 ;; file:
 
-;; (require 'ivy-flycheck)
+;;  (eval-after-load 'flycheck
+;;    '(define-key flycheck-mode-map (kbd "C-c ! o") 'ivy-flycheck))
 
 ;;;; Usage
 
-;; Run one of these commands:
+;; Run:
 
-;; `ivy-flyecheck':
+;; `ivy-flyecheck'
 
 ;;;; Tips
 
-;; + You can customize settings in the `ivy-flycheck' group.
+;; You can customize the delimiter in the `ivy-flycheck' group.
+
+;; You can also cusomize some faces: `column-number', `error-type', `warning-type',
+;; `info-type' and `text'.
 
 ;;;; Credits
 
 ;; This package would not have been possible without the following
-;; packages: flycheck[1], and ivy[2],
-;; which takes care of flanges.
+;; packages: flycheck[1], and ivy[2].
 ;;
 ;;  [1] https://github.com/flycheck/flycheck
 ;;  [2] https://github.com/abo-abo/swiper
@@ -74,7 +76,7 @@
 
 (defgroup ivy-flycheck nil
   "Settings for `ivy-flycheck'."
-  :link '(url-link "https://google.com"))
+  :link '(url-link "https://github.com/caisah/ivy-flycheck"))
 
 (defgroup ivy-flycheck-faces nil
   "Font-lock faces for `ivy-flyecheck'."
@@ -101,39 +103,33 @@
   '((t :inherit default))
   "Face used by ivy-flyecheck for highlighting the message text")
 
-(defcustom ivy-flycheck-delimiter ""
+(defcustom ivy-flycheck-delimiter "\n"
   "The text delimiter between ivy candidates."
   :group 'ivy-flycheck
   :type 'string)
 
-(setq ivy-flycheck--level-asoc '((warning . ivy-flycheck-warning-type)
+(defconst ivy-flycheck--level-asoc '((warning . ivy-flycheck-warning-type)
                                  (error . ivy-flycheck-error-type)
                                  (info . ivy-flyecheck-info-type)))
-
-(defun ivy-flycheck--add-face (str face)
-  "Wrapper function for `ivy--add-face'.  Add FACE to STR."
-  (if (fboundp 'ivy--add-face)
-      (ivy--add-face str face)
-    str))
 
 (defun ivy-flycheck--colorized-type (err)
   "Colorize the ERR flycheck error type accordingly."
   (let ((level (flycheck-error-level err)))
-    (ivy-flycheck--add-face (symbol-name level) (cdr (assoc level ivy-flycheck--level-asoc)))))
+    (ivy--add-face (symbol-name level) (cdr (assoc level ivy-flycheck--level-asoc)))))
 
 (defun ivy-flycheck--colorized-line-column (line col)
   "Colorize the LINE and COL accordingly."
-  (ivy-flycheck--add-face (concat
+  (ivy--add-face (concat
                   (number-to-string line) ":"
                   (number-to-string col) " ")
                  'ivy-flycheck-line-column-number))
 
 (defun ivy-flycheck--colorized-message (err)
   "Colorize the ERR flyecheck message accordingly."
-  (ivy-flycheck--add-face (flycheck-error-message err) 'ivy-flycheck-text))
+  (ivy--add-face (flycheck-error-message err) 'ivy-flycheck-text))
 
 (defun ivy-flycheck--safe-line (line)
-  "Return a valid buffere line number from LINE."
+  "Return a valid buffer line number from LINE."
   (cond ((eq line 0) 1)
         ((null line) 1)
       (t line)))
@@ -143,7 +139,9 @@
   (or column 0))
 
 (defun ivy-flycheck--format-error (err)
-  "Formats the ERR flycheck-error into one CAND entry.  Each entry is a cons of the colored text and another cons containing the LINE and COL number."
+  "Formats the ERR flycheck-error into one CAND entry.
+
+Each entry is a cons of the colored text and another cons containing the LINE and COL number."
   (let ((line (ivy-flycheck--safe-line (flycheck-error-line err)))
         (col (ivy-flycheck--safe-column (flycheck-error-column err))))
     (cons (concat (ivy-flycheck--colorized-type err)
