@@ -141,7 +141,7 @@
 (defun ivy-flycheck--format-error (err)
   "Formats the ERR flycheck-error into one CAND entry.
 
-Each entry is a cons of the colored text and another cons containing the LINE and COL number."
+Each entry is a cons of the colored text."
   (let ((line (ivy-flycheck--safe-line (flycheck-error-line err)))
         (col (ivy-flycheck--safe-column (flycheck-error-column err))))
     (cons (concat (ivy-flycheck--colorized-type err)
@@ -149,8 +149,7 @@ Each entry is a cons of the colored text and another cons containing the LINE an
                   (ivy-flycheck--colorized-line-column line col)
                   (ivy-flycheck--colorized-message err)
                   ivy-flycheck-delimiter)
-          (cons line col))))
-
+          err)))
 
 (defun ivy-flycheck-format-flycheck-errors ()
   "Maps a list of `flycheck' errors to an `ivy-read' CANDS list."
@@ -158,12 +157,10 @@ Each entry is a cons of the colored text and another cons containing the LINE an
       (cl-mapcar 'ivy-flycheck--format-error flycheck-current-errors)))
 
 (defun ivy-flycheck-action (entry)
-  "Jumps to the line and column from the ENTRY cons."
+  "Jumps to the error from ENTRY."
   (when (listp entry)
-    (let ((pos (cdr entry)))
-      (goto-line (car pos))
-      (move-to-column (cdr pos))
-      pos)))
+    (let ((err (cdr entry)))
+      (flycheck-jump-to-error err))))
 
 ;;;###autoload
 (defun ivy-flycheck ()
