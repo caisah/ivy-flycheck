@@ -14,10 +14,6 @@
 
 ;;;; Installation
 
-;;;;; MELPA
-
-
-
 ;;;;; Manual
 
 ;; Install these required packages:

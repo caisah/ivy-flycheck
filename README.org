@@ -1,0 +1,29 @@
+* Ivy Flycheck
+
+Jump to =flycheck= errors using =ivy=.
+
+** Install
+   #+begin_src emacs-lisp
+     (eval-after-load 'flycheck
+      '(define-key flycheck-mode-map (kbd "C-c ! o") 'ivy-flycheck))
+   #+end_src
+
+[[./misc/screenshot.png]]
+
+** Customization
+
+   You can customize some faces:
+
+   - ~ivy-flycheck-line-column-number~
+   - ~ivy-flycheck-error-type~
+   - ~ivy-flycheck-warning-type~
+   - ~ivy-flycheck-info-type~
+   - ~ivy-flycheck-text~
+
+   You can customize the /delimiter/ between ivy candidates if you don't like the '*\n*'.
+
+   #+begin_src emacs-lisp
+     (setq ivy-flycheck-delimiter "---")
+   #+end_src
+
+   *Tip*: If you use [[https://github.com/purcell/page-break-lines][page-break-lines]] you can set it to *^L*.
