@@ -6,7 +6,7 @@
 ;; URL: https://github.com/caisah/ivy-flycheck
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "24.5"))
-;; Keywords: flycheck, ivy, errors
+;; Keywords: tools, convenience
 
 ;; This file is not part of GNU Emacs.
 
@@ -31,7 +31,7 @@
 
 ;; Run:
 
-;; `ivy-flyecheck'
+;; `ivy-flycheck'
 
 ;;;; Tips
 
@@ -72,32 +72,33 @@
 
 (defgroup ivy-flycheck nil
   "Settings for `ivy-flycheck'."
+  :group 'convenience
   :link '(url-link "https://github.com/caisah/ivy-flycheck"))
 
 (defgroup ivy-flycheck-faces nil
-  "Font-lock faces for `ivy-flyecheck'."
+  "Font-lock faces for `ivy-flycheck'."
   :group 'faces
   :prefix "ivy-flycheck-")
 
 (defface ivy-flycheck-line-column-number
   '((t :inherit flycheck-error-list-column-number))
-  "Face used by ivy-flyecheck for highlighting the line and the column number of the flycheck message")
+  "Face used by ivy-flycheck for highlighting the line and the column number of the flycheck message")
 
 (defface ivy-flycheck-error-type
   '((t :inherit flycheck-error-list-error))
-  "Face used by ivy-flyecheck for highlighting the \"error\" keyword")
+  "Face used by ivy-flycheck for highlighting the \"error\" keyword")
 
 (defface ivy-flycheck-warning-type
   '((t :inherit flycheck-error-list-warning))
-  "Face used by ivy-flyecheck for highlighting the \"warning\" keyword")
+  "Face used by ivy-flycheck for highlighting the \"warning\" keyword")
 
 (defface ivy-flycheck-info-type
   '((t :inherit flycheck-error-list-info))
-  "Face used by ivy-flyecheck for highlighting the \"info\" keyword")
+  "Face used by ivy-flycheck for highlighting the \"info\" keyword")
 
 (defface ivy-flycheck-text
   '((t :inherit default))
-  "Face used by ivy-flyecheck for highlighting the message text")
+  "Face used by ivy-flycheck for highlighting the message text")
 
 (defcustom ivy-flycheck-delimiter "\n"
   "The text delimiter between ivy candidates."
@@ -106,7 +107,7 @@
 
 (defconst ivy-flycheck--level-asoc '((warning . ivy-flycheck-warning-type)
                                  (error . ivy-flycheck-error-type)
-                                 (info . ivy-flyecheck-info-type)))
+                                 (info . ivy-flycheck-info-type)))
 
 (defun ivy-flycheck--colorized-type (err)
   "Colorize the ERR flycheck error type accordingly."
@@ -121,7 +122,7 @@
                  'ivy-flycheck-line-column-number))
 
 (defun ivy-flycheck--colorized-message (err)
-  "Colorize the ERR flyecheck message accordingly."
+  "Colorize the ERR flycheck message accordingly."
   (ivy--add-face (flycheck-error-message err) 'ivy-flycheck-text))
 
 (defun ivy-flycheck--safe-line (line)
@@ -166,4 +167,5 @@ Each entry is a cons of the colored text."
                  :action 'ivy-flycheck-action
                  :caller 'ivy-flycheck))
 
+(provide 'ivy-flycheck)
 ;;; ivy-flycheck.el ends here
